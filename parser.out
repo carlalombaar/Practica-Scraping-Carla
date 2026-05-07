@@ -1,0 +1,145 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> documento
+Rule 1     documento -> bloque_elementos
+Rule 2     bloque_elementos -> elemento bloque_elementos
+Rule 3     bloque_elementos -> vacio
+Rule 4     elemento -> ETIQUETA_APERTURA
+Rule 5     elemento -> ETIQUETA_CIERRE
+Rule 6     elemento -> ATRIBUTO_HREF
+Rule 7     elemento -> ATRIBUTO_SRC
+Rule 8     vacio -> <empty>
+
+Terminals, with rules where they appear
+
+ATRIBUTO_HREF        : 6
+ATRIBUTO_SRC         : 7
+ETIQUETA_APERTURA    : 4
+ETIQUETA_CIERRE      : 5
+error                : 
+
+Nonterminals, with rules where they appear
+
+bloque_elementos     : 1 2
+documento            : 0
+elemento             : 2
+vacio                : 3
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . documento
+    (1) documento -> . bloque_elementos
+    (2) bloque_elementos -> . elemento bloque_elementos
+    (3) bloque_elementos -> . vacio
+    (4) elemento -> . ETIQUETA_APERTURA
+    (5) elemento -> . ETIQUETA_CIERRE
+    (6) elemento -> . ATRIBUTO_HREF
+    (7) elemento -> . ATRIBUTO_SRC
+    (8) vacio -> .
+
+    ETIQUETA_APERTURA shift and go to state 5
+    ETIQUETA_CIERRE shift and go to state 6
+    ATRIBUTO_HREF   shift and go to state 7
+    ATRIBUTO_SRC    shift and go to state 8
+    $end            reduce using rule 8 (vacio -> .)
+
+    documento                      shift and go to state 1
+    bloque_elementos               shift and go to state 2
+    elemento                       shift and go to state 3
+    vacio                          shift and go to state 4
+
+state 1
+
+    (0) S' -> documento .
+
+
+
+state 2
+
+    (1) documento -> bloque_elementos .
+
+    $end            reduce using rule 1 (documento -> bloque_elementos .)
+
+
+state 3
+
+    (2) bloque_elementos -> elemento . bloque_elementos
+    (2) bloque_elementos -> . elemento bloque_elementos
+    (3) bloque_elementos -> . vacio
+    (4) elemento -> . ETIQUETA_APERTURA
+    (5) elemento -> . ETIQUETA_CIERRE
+    (6) elemento -> . ATRIBUTO_HREF
+    (7) elemento -> . ATRIBUTO_SRC
+    (8) vacio -> .
+
+    ETIQUETA_APERTURA shift and go to state 5
+    ETIQUETA_CIERRE shift and go to state 6
+    ATRIBUTO_HREF   shift and go to state 7
+    ATRIBUTO_SRC    shift and go to state 8
+    $end            reduce using rule 8 (vacio -> .)
+
+    elemento                       shift and go to state 3
+    bloque_elementos               shift and go to state 9
+    vacio                          shift and go to state 4
+
+state 4
+
+    (3) bloque_elementos -> vacio .
+
+    $end            reduce using rule 3 (bloque_elementos -> vacio .)
+
+
+state 5
+
+    (4) elemento -> ETIQUETA_APERTURA .
+
+    ETIQUETA_APERTURA reduce using rule 4 (elemento -> ETIQUETA_APERTURA .)
+    ETIQUETA_CIERRE reduce using rule 4 (elemento -> ETIQUETA_APERTURA .)
+    ATRIBUTO_HREF   reduce using rule 4 (elemento -> ETIQUETA_APERTURA .)
+    ATRIBUTO_SRC    reduce using rule 4 (elemento -> ETIQUETA_APERTURA .)
+    $end            reduce using rule 4 (elemento -> ETIQUETA_APERTURA .)
+
+
+state 6
+
+    (5) elemento -> ETIQUETA_CIERRE .
+
+    ETIQUETA_APERTURA reduce using rule 5 (elemento -> ETIQUETA_CIERRE .)
+    ETIQUETA_CIERRE reduce using rule 5 (elemento -> ETIQUETA_CIERRE .)
+    ATRIBUTO_HREF   reduce using rule 5 (elemento -> ETIQUETA_CIERRE .)
+    ATRIBUTO_SRC    reduce using rule 5 (elemento -> ETIQUETA_CIERRE .)
+    $end            reduce using rule 5 (elemento -> ETIQUETA_CIERRE .)
+
+
+state 7
+
+    (6) elemento -> ATRIBUTO_HREF .
+
+    ETIQUETA_APERTURA reduce using rule 6 (elemento -> ATRIBUTO_HREF .)
+    ETIQUETA_CIERRE reduce using rule 6 (elemento -> ATRIBUTO_HREF .)
+    ATRIBUTO_HREF   reduce using rule 6 (elemento -> ATRIBUTO_HREF .)
+    ATRIBUTO_SRC    reduce using rule 6 (elemento -> ATRIBUTO_HREF .)
+    $end            reduce using rule 6 (elemento -> ATRIBUTO_HREF .)
+
+
+state 8
+
+    (7) elemento -> ATRIBUTO_SRC .
+
+    ETIQUETA_APERTURA reduce using rule 7 (elemento -> ATRIBUTO_SRC .)
+    ETIQUETA_CIERRE reduce using rule 7 (elemento -> ATRIBUTO_SRC .)
+    ATRIBUTO_HREF   reduce using rule 7 (elemento -> ATRIBUTO_SRC .)
+    ATRIBUTO_SRC    reduce using rule 7 (elemento -> ATRIBUTO_SRC .)
+    $end            reduce using rule 7 (elemento -> ATRIBUTO_SRC .)
+
+
+state 9
+
+    (2) bloque_elementos -> elemento bloque_elementos .
+
+    $end            reduce using rule 2 (bloque_elementos -> elemento bloque_elementos .)
+

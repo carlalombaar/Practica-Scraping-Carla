@@ -1,0 +1,6 @@
+REPORTE DE SCRAPING: prueba1.html
+Estructura balanceada: SI
+------------------------------
+ENLACES ENCONTRADOS (0):
+
+IMÁGENES ENCONTRADAS (0):

@@ -1,0 +1,8 @@
+REPORTE DE SCRAPING: prueba5.html
+Estructura balanceada: NO
+------------------------------
+ENLACES ENCONTRADOS (1):
+- http://www.bbc.co.uk
+
+IMÁGENES ENCONTRADAS (1):
+- brushedsteel.jpg
