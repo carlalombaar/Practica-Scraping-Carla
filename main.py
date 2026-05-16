@@ -1,36 +1,89 @@
-from parser import ejecutar_analisis
+import os
+import re
 import sys
+import requests
+# Importamos TU función del parser
+from parser import ejecutar_analisis 
 
-def generar_reporte(archivo_entrada):
-    try:
-        with open(archivo_entrada, 'r', encoding='utf-8') as f:
-            contenido = f.read()
-        
-        links, imagenes, balanceado = ejecutar_analisis(contenido)
-        
-        nombre_salida = "resultado_" + archivo_entrada.replace(".html", ".txt")
-        
-        with open(nombre_salida, 'w', encoding='utf-8') as f_out:
-            f_out.write(f"REPORTE DE SCRAPING: {archivo_entrada}\n")
-            # Usamos una variable intermedia para evitar el error de comillas
-            estado_texto = "SI" if balanceado else "NO"
-            f_out.write(f"Estructura balanceada: {estado_texto}\n")
-            f_out.write("-" * 30 + "\n")
-            f_out.write(f"ENLACES ENCONTRADOS ({len(links)}):\n")
-            for l in links: f_out.write(f"- {l}\n")
-            f_out.write(f"\nIMÁGENES ENCONTRADAS ({len(imagenes)}):\n")
-            for i in imagenes: f_out.write(f"- {i}\n")
-            
-        print(f"✅ EXITO: Generado {nombre_salida}")
+# --- CONFIGURACIÓN DE ESTILOS (ANSI) ---
+CSI = "\033["
+END = CSI + "0m"
+BOLD = CSI + "1m"
+RED = CSI + "31m"
+GREEN = CSI + "32m"
+YELLOW = CSI + "33m"
+CYAN = CSI + "36m"
 
-    except Exception as e:
-        print(f"❌ ERROR en {archivo_entrada}: {e}")
+def banner():
+    print(BOLD + CYAN + "="*60 + END)
+    print(BOLD + CYAN + "     🕸️  SISTEMA DE SCRAPING PRO - CARLA LOMBAAR  🕸️     " + END)
+    print(BOLD + CYAN + "="*60 + END)
+    print(f"{YELLOW}Archivos soportados:{END} local [.html], URLs [https://]")
+    print()
 
-if __name__ == "__main__":
-    # Aseguramos que 'archivo' se defina SIEMPRE antes de usarse
-    if len(sys.argv) > 1:
-        archivo = sys.argv[1]
+def cargar_contenido(origen: str) -> str:
+    if origen.lower().startswith('https://') or origen.lower().startswith('http://'):
+        # Descarga el HTML desde internet
+        resp = requests.get(origen, headers={'User-Agent': 'Mozilla/5.0'}, timeout=10)
+        resp.raise_for_status()
+        return resp.text
     else:
-        archivo = "prueba1.html"
-    
-    generar_reporte(archivo)
+        # Carga el archivo local
+        if not os.path.isfile(origen):
+            raise FileNotFoundError(f"No se encuentra el archivo '{origen}'.")
+        with open(origen, 'r', encoding='utf-8') as f:
+            return f.read()
+
+def guardar_lista(lista, nombre_fichero):
+    with open(nombre_fichero, 'w', encoding='utf-8') as f:
+        for item in lista:
+            f.write(item + '\n')
+
+def main():
+    banner()
+    while True:
+        origen = input(BOLD + "  Origen (.html/ o URL): " + END).strip()
+        if not origen:
+            print(GREEN + "  ¡Hasta pronto!" + END)
+            break
+
+        try:
+            # 1. Obtenemos el HTML
+            html = cargar_contenido(origen)
+            
+            # 2. Tu parser (ejecutar_analisis devuelve links, imagenes, balance)
+            enlaces, imagenes, balance_ok = ejecutar_analisis(html)
+
+            # 3. Mostrar resultados por pantalla (Estilo Jaime)
+            print("\n" + BOLD + CYAN + "-"*50 + END)
+            print(BOLD + "Origen: " + END + origen)
+            print(BOLD + "- Enlaces (href):" + END, f"{len(enlaces)}")
+            for u in enlaces:
+                print("   •", u)
+            
+            print(BOLD + "- Imágenes (src):" + END, f"{len(imagenes)}")
+            for u in imagenes:
+                print("   •", u)
+
+            # Resultado del balanceo
+            bal_text = (GREEN + "SÍ" + END) if balance_ok else (RED + "NO" + END)
+            print(BOLD + "- HTML balanceado:" + END, bal_text)
+            print(BOLD + CYAN + "-"*50 + END + "\n")
+
+            # 4. Guardar resultados (Sanitización para evitar el Error 22)
+            safe_name = re.sub(r'[^0-9A-Za-z]+', '_', origen).strip('_')
+            f_links = f"enlaces_{safe_name}.txt"
+            f_imgs  = f"imagenes_{safe_name}.txt"
+            
+            guardar_lista(enlaces, f_links)
+            guardar_lista(imagenes, f_imgs)
+            
+            print(GREEN + f"  ÉXITO: Guardado '{f_links}'" + END)
+            print(GREEN + f"  ÉXITO: Guardado '{f_imgs}'\n" + END)
+
+        except Exception as e:
+            print(RED + " ERROR:" + END, e)
+            print()
+
+if __name__ == '__main__':
+    main()

@@ -1,6 +1,5 @@
 """
 FRAMEWORK DE VALIDACIÓN SINTÁCTICA - CURSO 2025-2026
-Herramienta de Auditoría y Cross-Test Profesional
 Desarrollado por: Carla Lombaar
 """
 
@@ -20,14 +19,7 @@ except ImportError:
 class AnalizadorPro:
     def __init__(self):
         # Configuración visual y etiquetas a analizar
-        self.CLR = {
-            'tit': "\033[94m", 
-            'ok': "\033[92m", 
-            'err': "\033[91m", 
-            'am': "\033[93m",
-            'res': "\033[0m", 
-            'bold': "\033[1m"
-        }
+        self.CLR = {'tit': "\033[94m", 'ok': "\033[92m", 'err': "\033[91m", 'res': "\033[0m", 'bold': "\033[1m"}
         self.tags_analizar = ['a', 'img', 'div', 'p', 'span', 'ul', 'li', 'table', 'tr', 'td', 'br']
 
     def mostrar_logo(self):
@@ -52,7 +44,7 @@ class AnalizadorPro:
         """Analiza el árbol de etiquetas usando BeautifulSoup."""
         dom = BeautifulSoup(html, 'html.parser')
         
-        # Extracción de recursos
+        # Extracción estricta de recursos
         coleccion_links = [tag['href'] for tag in dom.find_all('a', href=True)]
         coleccion_imgs = [tag['src'] for tag in dom.find_all('img', src=True)]
         
@@ -63,7 +55,7 @@ class AnalizadorPro:
 
     def generar_log(self, data, tipo, base_name):
         """Guarda los resultados en ficheros con marca de tiempo única."""
-        marca = datetime.now().strftime("%H%M%S")
+        marca = datetime.now().strftime("%Y_%H%M%S")
         slug = re.sub(r'\W+', '', base_name)[:10]
         archivo_nombre = f"LOG_{tipo}_{slug}_{marca}.txt"
         
@@ -83,30 +75,21 @@ class AnalizadorPro:
                 raw_html = self.capturar_contenido(target)
                 links, imagenes, stats = self.extraer_info(raw_html)
 
-                # Resultados de la librería profesional
-                print(f"\n{self.CLR['tit']}--- RESULTADOS DE LA AUDITORÍA (BS4) ---{self.CLR['res']}")
+                print(f"\n{self.CLR['tit']}--- RESULTADOS DE LA AUDITORÍA ---{self.CLR['res']}")
                 print(f"[{self.CLR['ok']}OK{self.CLR['res']}] Recurso: {target}")
                 print(f"[{self.CLR['ok']}OK{self.CLR['res']}] Enlaces: {len(links)} | Imágenes: {len(imagenes)}")
                 
-                print(f"\n{self.CLR['bold']}Estadísticas de estructura:{self.CLR['res']}")
+                print(f"\n{self.CLR['bold']}Densidad de etiquetas (Estadísticas):{self.CLR['res']}")
                 for tag, total in stats.items():
                     print(f"  <{tag}>: {total}")
-
-                # Sección de Comparación (Cross-Test)
-                print(f"\n{self.CLR['tit']}--- VERIFICACIÓN CRUZADA (CROSS-TEST) ---{self.CLR['res']}")
-                print(f"📊 {self.CLR['bold']}Resumen para la memoria en {target}:{self.CLR['res']}")
-                print(f"  > Enlaces detectados: {len(links)}")
-                print(f"  > Imágenes detectadas: {len(imagenes)}")
-                print(f"\n{self.CLR['am']}💡 TIP:{self.CLR['res']} Si tu parser cuenta 1 más, es porque BS4 descarta enlaces vacíos.")
-                print(f"{self.CLR['tit']}{'='*50}{self.CLR['res']}")
 
                 # Persistencia de los resultados
                 f1 = self.generar_log(links, "ENLACES", target)
                 f2 = self.generar_log(imagenes, "IMAGENES", target)
-                print(f"\n{self.CLR['ok']}✅ Logs exportados: {f1} y {f2}{self.CLR['res']}")
+                print(f"\n{self.CLR['ok']} Auditoría exportada a: {f1} y {f2}{self.CLR['res']}")
 
             except Exception as e:
-                print(f"{self.CLR['err']}❌ ERROR EN EL PROCESO: {e}{self.CLR['res']}")
+                print(f"{self.CLR['err']} ERROR EN EL PROCESO: {e}{self.CLR['res']}")
 
 if __name__ == "__main__":
     app = AnalizadorPro()
